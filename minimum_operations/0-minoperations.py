@@ -13,7 +13,3 @@ def minOperations(n):
         d += 1
 
     return operations
-
-
-n = 9
-print(minOperations(n))
