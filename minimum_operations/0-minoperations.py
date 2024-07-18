@@ -4,6 +4,7 @@
 n
 """
 
+
 def minOperations(n):
     """
     n
@@ -18,5 +19,4 @@ def minOperations(n):
             operations += d
             n //= d
         d += 1
-
     return operations
