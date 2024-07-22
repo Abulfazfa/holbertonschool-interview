@@ -5,6 +5,7 @@
  * print_grid - prints a grid
  * @grid: grid to print
  */
+
 static void print_grid(int grid[3][3])
 {
 	int i, j;
