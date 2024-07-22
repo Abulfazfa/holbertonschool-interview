@@ -42,6 +42,7 @@ void add_grids(int grid1[3][3], int grid2[3][3])
  *
  * Return: 1 if stable, 0 otherwise
  */
+
 int is_stable(int grid[3][3])
 {
 	size_t i, j;
@@ -57,6 +58,7 @@ int is_stable(int grid[3][3])
  * topple - topples an unstable sandpile
  * @grid: sandpile to topple
  */
+
 void topple(int grid[3][3])
 {
 	int i, j;
@@ -91,6 +93,7 @@ void topple(int grid[3][3])
  * @grid1: first sandpile
  * @grid2: second sandpile
  */
+
 void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 {
 	add_grids(grid1, grid2);
