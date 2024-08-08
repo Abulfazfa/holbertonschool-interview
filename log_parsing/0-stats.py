@@ -1,10 +1,12 @@
 #!/usr/bin/python3
+from sys import stdin
+
 """
 Module parses and prints stats to stdout
 """
 
 
-from sys import stdin
+
 
 status_codes = {
     "200": 0,
