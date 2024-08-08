@@ -2,6 +2,8 @@
 """
 Module parses and prints stats to stdout
 """
+
+
 from sys import stdin
 
 status_codes = {
@@ -20,6 +22,7 @@ size = 0
 
 def print_stats():
     """Prints the accumulated logs"""
+
     print("File size: {}".format(size))
     for status in sorted(status_codes.keys()):
         if status_codes[status]:
