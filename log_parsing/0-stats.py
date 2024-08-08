@@ -1,15 +1,9 @@
 #!/usr/bin/python3
+"""
+Module parses and prints stats to stdout
+"""
+from sys import stdin
 
-
-"""Input stats"""
-
-
-import sys
-import re
-
-
-logs = 0
-total_size = 0
 status_codes = {
     "200": 0,
     "301": 0,
@@ -21,27 +15,33 @@ status_codes = {
     "500": 0
 }
 
-
-def print_statistics(statuses, total):
-    # print keys and values
-
-    print("File size: {}".format(total))
-    for key, value in sorted(statuses.items()):
-        if value != 0:
-            print("{}: {}".format(key, value))
+size = 0
 
 
-try:
-    for line in sys.stdin:
-        new_line = line.rstrip().split(" ")
-        if len(new_line) == 9 or len(new_line) == 7:
+def print_stats():
+    """Prints the accumulated logs"""
+    print("File size: {}".format(size))
+    for status in sorted(status_codes.keys()):
+        if status_codes[status]:
+            print("{}: {}".format(status, status_codes[status]))
+
+
+if __name__ == "__main__":
+    count = 0
+    try:
+        for line in stdin:
             try:
-                logs += 1
-                total_size += int(new_line[-1])
-                status_codes[new_line[-2]] += 1
-                if logs % 10 == 0 and logs != 0:
-                    print_statistics(status_codes, total_size)
-            except BaseException:
+                items = line.split()
+                size += int(items[-1])
+                if items[-2] in status_codes:
+                    status_codes[items[-2]] += 1
+            except:
                 pass
-finally:
-    print_statistics(status_codes, total_size)
+            if count == 9:
+                print_stats()
+                count = -1
+            count += 1
+    except KeyboardInterrupt:
+        print_stats()
+        raise
+    print_stats()
