@@ -2,8 +2,9 @@
 """ UTF-8 Validation """
 
 
-def valid_utf8(data):
-    """ Validate UTF-8 encoding """  
+def validUTF8(data):
+    """Function"""
+
     count = 0
     for dt in data:
         binary = bin(dt).replace('0b', '').rjust(8, '0')[-8:]
