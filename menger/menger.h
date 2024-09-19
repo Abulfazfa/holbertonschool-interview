@@ -1,9 +1,9 @@
-#ifndef MENGER_SPONGE_H
-#define MENGER_SPONGE_H
+#ifndef MENGER_H
+#define MENGER_H
 
 #include <math.h>
 #include <stdio.h>
 
 void menger(int level);
 
-#endif
+#endif /* MENGER_H */
