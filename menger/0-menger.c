@@ -10,7 +10,7 @@ int n, m, j, x, y;
 char s;
 
 m = pow(3, level);
-for (n = 0;n < m;n++)
+for (n = 0; n < m; n++)
 {
 for (j = 0; j < m;)
 {
