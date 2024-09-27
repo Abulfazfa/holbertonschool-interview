@@ -39,7 +39,7 @@ class NQueen:
 
 
 if len(sys.argv) != 2:
-    print("Usage: nqueens N")
+    print("Usage: nqueens N\n")
     sys.exit(1)
 
 N = sys.argv[1]
