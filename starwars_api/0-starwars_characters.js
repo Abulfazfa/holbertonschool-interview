@@ -1,25 +1,37 @@
 #!/usr/bin/node
 
 const request = require('request');
-const arg = process.argv[2];
-const url = `https://swapi-api.hbtn.io/api/films/${arg}`;
+const movieId = process.argv[2];
+const url = `https://swapi-api.hbtn.io/api/films/${movieId}/`;
 
-const charNames = (characters, i = 0) => {
-  if (i === characters.length) return;
-  request(characters[i], (error, response, body) => {
-    if (error) throw error;
-    // Convert a string of characters JSON to a JavaScript object and print it
-    console.log(JSON.parse(body).name);
-    // Call recursively the function charNames and increment it to pass to the next character
-    charNames(characters, i + 1);
-  });
-};
+// Fetch movie data from the Star Wars API
+request(url, (error, response, body) => {
+  if (error) {
+    console.error('Error:', error);
+    return;
+  }
 
-// Request to the API to recover movie information
-request(url, function (error, response, body) {
-  if (error) throw error;
-  // Extract URL of characters from the body JSON response and store it in a var char
-  const char = JSON.parse(body).characters;
-  // Call the function charNames to print the characters
-  charNames(char);
+  const filmData = JSON.parse(body);
+  const characters = filmData.characters;
+
+  // Function to fetch and print each character's name
+  const printCharacter = (url, callback) => {
+    request(url, (err, res, data) => {
+      if (err) {
+        console.error('Error:', err);
+        return;
+      }
+      console.log(JSON.parse(data).name);
+      callback();
+    });
+  };
+
+  // Iterate over all character URLs
+  const printAllCharacters = (i) => {
+    if (i < characters.length) {
+      printCharacter(characters[i], () => printAllCharacters(i + 1));
+    }
+  };
+
+  printAllCharacters(0);
 });
