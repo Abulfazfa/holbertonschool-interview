@@ -1,22 +1,25 @@
 #!/usr/bin/node
 
 const request = require('request');
-const arg = process.argv[2];  // Get the Movie ID from the command-line argument
-const url = `https://swapi-api.hbtn.io/api/films/${arg}`;  // API URL for the specific movie
+const arg = process.argv[2];
+const url = `https://swapi-api.hbtn.io/api/films/${arg}`;
 
-// Function to recursively fetch and print character names
 const charNames = (characters, i = 0) => {
-  if (i === characters.length) return;  // Base case: when all characters are printed
+  if (i === characters.length) return;
   request(characters[i], (error, response, body) => {
-    if (error) throw error;  // Handle any errors from the API request
-    console.log(JSON.parse(body).name);  // Parse and print the character's name
-    charNames(characters, i + 1);  // Recursively call the function for the next character
+    if (error) throw error;
+    // Convert a string of characters JSON to a JavaScript object and print it
+    console.log(JSON.parse(body).name);
+    // Call recursively the function charNames and increment it to pass to the next character
+    charNames(characters, i + 1);
   });
 };
 
-// Request movie information from the API
-request(url, (error, response, body) => {
-  if (error) throw error;  // Handle any errors from the movie request
-  const char = JSON.parse(body).characters;  // Extract the list of character URLs
-  charNames(char);  // Call the function to print character names
+// Request to the API to recover movie information
+request(url, function (error, response, body) {
+  if (error) throw error;
+  // Extract URL of characters from the body JSON response and store it in a var char
+  const char = JSON.parse(body).characters;
+  // Call the function charNames to print the characters
+  charNames(char);
 });
