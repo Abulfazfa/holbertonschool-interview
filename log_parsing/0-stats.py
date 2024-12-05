@@ -1,12 +1,14 @@
 #!/usr/bin/python3
-"""
-Module parses and prints stats to stdout
-"""
+"""Reads stdin line by line and computes metrics
+If count of lines is evenly divided by 10 and/or
+keyboardinterrupt
+all info will be printed"""
 
+import sys
 
-from sys import stdin
-
-status_codes = {
+file_size = 0
+count = 0
+ids = {
     "200": 0,
     "301": 0,
     "400": 0,
@@ -17,34 +19,27 @@ status_codes = {
     "500": 0
 }
 
-size = 0
+
+def print_msg(ids, file_size):
+    print("File size: {}".format(file_size))
+    for key, val in sorted(ids.items()):
+        if val != 0:
+            print("{}: {}".format(key, val))
 
 
-def print_stats():
-    """Prints the accumulated logs"""
-
-    print("File size: {}".format(size))
-    for status in sorted(status_codes.keys()):
-        if status_codes[status]:
-            print("{}: {}".format(status, status_codes[status]))
-
-
-if __name__ == "__main__":
-    count = 0
-    try:
-        for line in stdin:
-            try:
-                items = line.split()
-                size += int(items[-1])
-                if items[-2] in status_codes:
-                    status_codes[items[-2]] += 1
-            except:
-                pass
-            if count == 9:
-                print_stats()
-                count = -1
+try:
+    for line in sys.stdin:
+        nums = line.rstrip().split(' ')
+        try:
+            if nums[-2] in ids:
+                ids[nums[-2]] += 1
+            file_size += int(nums[-1])
             count += 1
-    except KeyboardInterrupt:
-        print_stats()
-        raise
-    print_stats()
+            if count % 10 == 0:
+                print_msg(ids, file_size)
+        except BaseException:
+            pass
+
+
+finally:
+    print_msg(ids, file_size)
