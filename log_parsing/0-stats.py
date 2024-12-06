@@ -1,12 +1,4 @@
-#!/usr/bin/python3
-
-
-"""Input stats"""
-
-
 import sys
-import re
-
 
 logs = 0
 total_size = 0
@@ -21,25 +13,26 @@ status_codes = {
     "500": 0
 }
 
-
 def print_statistics(statuses, total):
     print("File size: {}".format(total))
     for key, value in sorted(statuses.items()):
         if value != 0:
             print("{}: {}".format(key, value))
 
-
 try:
     for line in sys.stdin:
-        new_line = line.rstrip().split(" ")
-        if len(new_line) == 9 or len(new_line) == 7:
-            try:
-                logs += 1
-                total_size += int(new_line[-1])
-                status_codes[new_line[-2]] += 1
-                if logs % 10 == 0 and logs != 0:
-                    print_statistics(status_codes, total_size)
-            except BaseException:
-                pass
+        try:
+            logs += 1
+            new_line = line.rstrip().split(" ")
+            if len(new_line) < 2:
+                continue  # Skip malformed lines
+            total_size += int(new_line[-1])
+            status_code = new_line[-2]
+            if status_code in status_codes:
+                status_codes[status_code] += 1
+            if logs % 10 == 0:
+                print_statistics(status_codes, total_size)
+        except (ValueError, IndexError) as e:
+            print(f"Error processing line: {line}, Error: {e}", file=sys.stderr)
 finally:
     print_statistics(status_codes, total_size)
