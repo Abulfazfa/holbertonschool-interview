@@ -1,12 +1,9 @@
 #!/usr/bin/python3
 
-
 """Input stats"""
-
 
 import sys
 import re
-
 
 logs = 0
 total_size = 0
@@ -21,26 +18,32 @@ status_codes = {
     "500": 0
 }
 
-
 def print_statistics(statuses, total):
     print("File size: {}".format(total))
     for key, value in sorted(statuses.items()):
         if value != 0:
             print("{}: {}".format(key, value))
 
-
 try:
+    # Check if stdin has data
+    if sys.stdin.isatty():
+        # If running interactively or without input, exit
+        print("No input provided", file=sys.stderr)
+        sys.exit(0)
+        
     for line in sys.stdin:
-        new_line = line.rstrip().split(" ")
-        if len(new_line) == 9 or len(new_line) == 7:
-            try:
-                logs += 1
-                total_size += int(new_line[-1])
-                status_codes[new_line[-2]] += 1
-                if logs % 10 == 0 and logs != 0:
-                    print_statistics(status_codes, total_size)
-            except BaseException:
-                pass
+        try:
+            logs += 1
+            parts = line.rstrip().split(" ")
+            if len(parts) < 2:
+                continue
+            total_size += int(parts[-1])  # Last part is file size
+            status_code = parts[-2]  # Second to last part is status code
+            if status_code in status_codes:
+                status_codes[status_code] += 1
+            if logs % 10 == 0:
+                print_statistics(status_codes, total_size)
+        except (ValueError, KeyError, IndexError) as e:
+            print(f"Skipping line due to error: {e}", file=sys.stderr)
 finally:
     print_statistics(status_codes, total_size)
-    
