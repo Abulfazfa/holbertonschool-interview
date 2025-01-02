@@ -1,16 +1,14 @@
 #!/usr/bin/python3
-
-
-"""Input stats"""
-
+"""Reads stdin line by line and computes metrics
+If count of lines is evenly divided by 10 and/or
+keyboardinterrupt
+all info will be printed"""
 
 import sys
-import re
 
-
-logs = 0
-total_size = 0
-status_codes = {
+file_size = 0
+count = 0
+ids = {
     "200": 0,
     "301": 0,
     "400": 0,
@@ -22,24 +20,26 @@ status_codes = {
 }
 
 
-def print_statistics(statuses, total):
-    print("File size: {}".format(total))
-    for key, value in sorted(statuses.items()):
-        if value != 0:
-            print("{}: {}".format(key, value))
+def print_msg(ids, file_size):
+    print("File size: {}".format(file_size))
+    for key, val in sorted(ids.items()):
+        if val != 0:
+            print("{}: {}".format(key, val))
 
 
 try:
     for line in sys.stdin:
-        new_line = line.rstrip().split(" ")
-        if len(new_line) == 9 or len(new_line) == 7:
-            try:
-                logs += 1
-                total_size += int(new_line[-1])
-                status_codes[new_line[-2]] += 1
-                if logs % 10 == 0 and logs != 0:
-                    print_statistics(status_codes, total_size)
-            except BaseException:
-                pass
+        nums = line.rstrip().split(' ')
+        try:
+            if nums[-2] in ids:
+                ids[nums[-2]] += 1
+            file_size += int(nums[-1])
+            count += 1
+            if count % 10 == 0:
+                print_msg(ids, file_size)
+        except BaseException:
+            pass
+
+
 finally:
-    print_statistics(status_codes, total_size)
+    print_msg(ids, file_size)
