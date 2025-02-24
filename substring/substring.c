@@ -12,19 +12,48 @@ int *find_substring(char const *s, char const **words, int nb_words, int *n);
 #include "substring.h"
 
 /**
- * find_substring - Finds all the possible substrings containing a list of words
- * @s: The string to scan
- * @words: The array of words all substrings must be a concatenation of
- * @nb_words: The number of elements in the array words
- * @n: Pointer to store the number of elements in the returned array
+ * check_substring - Checks if a substring starting at index matches words
+ * @s: The input string
+ * @words: The words array
+ * @nb_words: Number of words
+ * @word_len: Length of each word
  *
- * Return: An allocated array storing each index in s, at which a substring was found.
+ * Return: 1 if valid, 0 otherwise
  */
-int *find_substring(char const *s, char const **words, int nb_words, int *n)
+int check_substring(const char *s, const char **words, int nb_words, int word_len)
 {
-    int word_len, str_len, substr_len, *indices, count = 0, i, j;
-    char *temp;
-    int *word_count;
+    int found[nb_words];
+    int i, j;
+
+    memset(found, 0, sizeof(found));
+    for (i = 0; i < nb_words; i++)
+    {
+        for (j = 0; j < nb_words; j++)
+        {
+            if (!found[j] && strncmp(s + i * word_len, words[j], word_len) == 0)
+            {
+                found[j] = 1;
+                break;
+            }
+        }
+        if (j == nb_words)
+            return (0);
+    }
+    return (1);
+}
+
+/**
+ * find_substring - Finds all valid substrings made from words
+ * @s: The input string
+ * @words: Array of words
+ * @nb_words: Number of words
+ * @n: Output parameter to store the number of found substrings
+ *
+ * Return: Array of starting indices, or NULL if none found
+ */
+int *find_substring(const char *s, const char **words, int nb_words, int *n)
+{
+    int str_len, word_len, substr_len, *indices, count = 0, i;
 
     if (!s || !words || nb_words == 0 || !n)
         return (NULL);
@@ -36,36 +65,12 @@ int *find_substring(char const *s, char const **words, int nb_words, int *n)
     if (!indices)
         return (NULL);
 
-    word_count = malloc(nb_words * sizeof(int));
-    if (!word_count)
-    {
-        free(indices);
-        return (NULL);
-    }
-
     for (i = 0; i <= str_len - substr_len; i++)
     {
-        memset(word_count, 0, nb_words * sizeof(int));
-        for (j = 0; j < nb_words; j++)
-        {
-            temp = strndup(s + i + j * word_len, word_len);
-            if (!temp)
-                continue;
-            for (int k = 0; k < nb_words; k++)
-            {
-                if (!strcmp(temp, words[k]) && word_count[k] == 0)
-                {
-                    word_count[k] = 1;
-                    break;
-                }
-            }
-            free(temp);
-        }
-        if (memchr(word_count, 0, nb_words * sizeof(int)) == NULL)
+        if (check_substring(s + i, words, nb_words, word_len))
             indices[count++] = i;
     }
-    
-    free(word_count);
+
     *n = count;
     return (realloc(indices, count * sizeof(int)));
 }
