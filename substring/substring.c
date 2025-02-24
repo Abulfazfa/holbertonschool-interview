@@ -20,27 +20,27 @@ int *find_substring(char const *s, char const **words, int nb_words, int *n);
  *
  * Return: 1 if valid, 0 otherwise
  */
-int check_substring(const char *s, 
-    const char **words, int nb_words, int word_len)
+int check_substring(const char *s, const char **words,
+                    int nb_words, int word_len)
 {
-	int found[nb_words];
-	int i, j;
+    int found[nb_words];
+    int i, j;
 
-	memset(found, 0, sizeof(found));
-	for (i = 0; i < nb_words; i++)
-	{
-		for (j = 0; j < nb_words; j++)
-		{
-			if (!found[j] && strncmp(s + i * word_len, words[j], word_len) == 0)
-			{
-				found[j] = 1;
-				break;
-			}
-		}
-		if (j == nb_words)
-			return (0);
-	}
-	return (1);
+    memset(found, 0, sizeof(found));
+    for (i = 0; i < nb_words; i++)
+    {
+        for (j = 0; j < nb_words; j++)
+        {
+            if (!found[j] && strncmp(s + i * word_len, words[j], word_len) == 0)
+            {
+                found[j] = 1;
+                break;
+            }
+        }
+        if (j == nb_words)
+            return (0);
+    }
+    return (1);
 }
 
 /**
@@ -52,26 +52,27 @@ int check_substring(const char *s,
  *
  * Return: Array of starting indices, or NULL if none found
  */
-int *find_substring(const char *s, const char **words, int nb_words, int *n)
+int *find_substring(const char *s, const char **words,
+                    int nb_words, int *n)
 {
-	int str_len, word_len, substr_len, *indices, count = 0, i;
+    int str_len, word_len, substr_len, *indices, count = 0, i;
 
-	if (!s || !words || nb_words == 0 || !n)
-		return (NULL);
+    if (!s || !words || nb_words == 0 || !n)
+        return (NULL);
 
-	word_len = strlen(words[0]);
-	str_len = strlen(s);
-	substr_len = word_len * nb_words;
-	indices = malloc(str_len * sizeof(int));
-	if (!indices)
-		return (NULL);
+    word_len = strlen(words[0]);
+    str_len = strlen(s);
+    substr_len = word_len * nb_words;
+    indices = malloc(str_len * sizeof(int));
+    if (!indices)
+        return (NULL);
 
-	for (i = 0; i <= str_len - substr_len; i++)
-	{
-		if (check_substring(s + i, words, nb_words, word_len))
-			indices[count++] = i;
-	}
+    for (i = 0; i <= str_len - substr_len; i++)
+    {
+        if (check_substring(s + i, words, nb_words, word_len))
+            indices[count++] = i;
+    }
 
-	*n = count;
-	return (realloc(indices, count * sizeof(int)));
+    *n = count;
+    return (realloc(indices, count * sizeof(int)));
 }
