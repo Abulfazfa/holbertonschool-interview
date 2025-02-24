@@ -20,7 +20,8 @@ int *find_substring(char const *s, char const **words, int nb_words, int *n);
  *
  * Return: 1 if valid, 0 otherwise
  */
-int check_substring(const char *s, const char **words, int nb_words, int word_len)
+int check_substring(const char *s, 
+    const char **words, int nb_words, int word_len)
 {
 	int found[nb_words];
 	int i, j;
